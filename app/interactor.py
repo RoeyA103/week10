@@ -64,14 +64,10 @@ class DataInteractor:
         cursor = self.cnx.cursor()
         try:
             for key ,val in contact.items():
-                cursor.execute(
-                    """
-                    UPDATE table_name
-                    SET (%s) = (%s)
-                    WHERE id = (%s);
-                    """,
-                    (key , val ,contact_id)
-                )
+                if val is None: 
+                    continue
+                sql = f"UPDATE contacts SET `{key}` = %s WHERE id = %s"
+                cursor.execute(sql, (val, contact_id))
                 self.cnx.commit()
             return "The contact was successfully updated"
         except mysql.connector.Error as err:
@@ -84,12 +80,8 @@ class DataInteractor:
     def del_contact(self,contact_id:int)->str:
         cursor = self.cnx.cursor()
         try:
-            cursor.execute(
-                """
-                DELETE FROM contacts WHERE id = (%s);
-                """,
-                (contact_id)
-            )
+            sql = "DELETE FROM contacts WHERE id = %s"
+            cursor.execute(sql,(contact_id,))
             self.cnx.commit()
             return "The contact was successfully deleted"
         except mysql.connector.Error as err:

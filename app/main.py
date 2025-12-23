@@ -16,7 +16,7 @@ class ContactUpdate(BaseModel):
 
 app = FastAPI()
 
-@app.get("/health")
+@app.get("/")
 def health():
     return {"healthy"}
 
@@ -27,12 +27,15 @@ def list_contacts():
 
 @app.post("/contacts")
 def create_contacts(contact: Contact):
-    dt.create_new_contact(contact)
+    ms = dt.create_new_contact(contact)
+    return ms
 
 @app.put("/contacts/{id}")
 def update_contact(id:int,contact:ContactUpdate):
-    dt.update_contact(contact_id=id,contact=contact)
+    ms = dt.update_contact(contact_id=id,contact=contact)
+    return ms
 
 @app.delete("/contacts/{id}")
 def del_contact(id:int):
-    dt.del_contact(id)
+    ms = dt.del_contact(id)
+    return ms
