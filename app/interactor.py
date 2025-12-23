@@ -1,12 +1,17 @@
 import mysql.connector
 from mysql.connector import errorcode
+import os
+
 
 def get_cnx() -> None:
     try:
-        cnx = mysql.connector.connect(user='root', password='pass',
-                                    host='127.0.0.1',
-                                    port=3306,
-                                    database='contacts_db')
+        cnx = mysql.connector.connect(
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
+        port=3306,
+    )
         return cnx
 
     except mysql.connector.Error as err:
