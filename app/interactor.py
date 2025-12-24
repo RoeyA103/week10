@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import errorcode
 import os
+from schemas import *
 
 
 def get_cnx() -> None:

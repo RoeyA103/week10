@@ -1,18 +1,9 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 from interactor import DataInteractor
+from schemas import *
 
 dt = DataInteractor()
-
-class Contact(BaseModel):
-    first_name:str
-    last_name:str
-    phone_number:str
-
-class ContactUpdate(BaseModel):
-    first_name: str | None = None
-    last_name: str | None = None
-    phone_number: str | None = None    
+   
 
 app = FastAPI()
 
