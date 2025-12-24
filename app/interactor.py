@@ -65,31 +65,59 @@ class DataInteractor:
 
     def update_contact(self,contact_id:int,contact:ContactUpdate)->str:
 
-        contact = contact.dict()
+        contact = contact.model_dump()
         
         cursor = self.cnx.cursor()
         try:
-            for key ,val in contact.items():
-                if val is None: 
-                    continue
-                sql = f"UPDATE contacts SET `{key}` = %s WHERE id = %s"
-                cursor.execute(sql, (val, contact_id))
-                self.cnx.commit()
+            fields = []
+            values = []
+
+            for key, val in contact.items():
+                if val is not None:
+                    fields.append(f"`{key}` = %s")
+                    values.append(val)
+
+            if not fields:
+                return "Nothing to update"
+
+            sql = f"""
+                UPDATE contacts
+                SET {', '.join(fields)}
+                WHERE id = %s
+            """
+
+            values.append(contact_id)
+            cursor.execute(sql, tuple(values))
+
+            if cursor.rowcount == 0:
+                self.cnx.rollback()
+                return "No contact found with this ID"
+
+            self.cnx.commit()
             return "The contact was successfully updated"
+
         except mysql.connector.Error as err:
-            self.cnx.rollback()  
-            return err             
+            self.cnx.rollback()
+            return err
 
         finally:
             cursor.close()
+
+
 
     def del_contact(self,contact_id:int)->str:
         cursor = self.cnx.cursor()
         try:
             sql = "DELETE FROM contacts WHERE id = %s"
             cursor.execute(sql,(contact_id,))
+
+            if cursor.rowcount == 0:
+                self.cnx.rollback()
+                return "No contact found with this ID"
+            
             self.cnx.commit()
             return "The contact was successfully deleted"
+        
         except mysql.connector.Error as err:
             self.cnx.rollback()  
             return err             

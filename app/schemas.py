@@ -5,8 +5,12 @@ class Contact(BaseModel):
     last_name: str = Field(min_length=1, max_length=50)
     phone_number: str = Field(min_length=7, max_length=20)
 
+    def to_dict(self):
+        return self.__dict__
+
 
 class ContactUpdate(BaseModel):
     first_name: str  = Field(default=None, min_length=1, max_length=50)
     last_name: str  = Field(default=None, min_length=1, max_length=50)
     phone_number: str  = Field(default=None, min_length=7, max_length=20)
+
