@@ -4,7 +4,7 @@ import os
 from schemas import *
 
 
-def get_cnx() -> None:
+def get_cnx():
     try:
         cnx = mysql.connector.connect(
         host=os.getenv("DB_HOST"),
