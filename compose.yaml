@@ -1,19 +1,15 @@
 version: '3.8'
 
 services:
-  db:
-    image: mysql:8.0
-    container_name: db_server
+  mysql:
+    image: mysql:8.0 
+    container_name: mysql_container
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASS} 
+      MYSQL_DATABASE: ${DB_NAME}                 
     ports:
-      - "8000:80"
-    # volumes:
-    #   - ./index.html:/usr/share/nginx/html/index.html:ro
-    # depends_on:
-    #   - api
-
-  # # Backend FastAPI
-  # api:
-  #   build: ./api
-  #   container_name: backend_api
-  #   ports:
-  #     - "8000:8000"
+      - "3306:3306" 
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
